@@ -2,7 +2,7 @@
 
 日志查看器，浏览器实时展示服务器日志
 
-![image-20200304114919444](https://tva1.sinaimg.cn/large/00831rSTly1gchr45v16hj31fy0fmn5i.jpg)
+![image-20200304154048176](https://tva1.sinaimg.cn/large/00831rSTly1gchxsyxcyqj31gb0k5n7v.jpg)
 
 
 
@@ -39,4 +39,4 @@ nohup java -jar zlog-0.0.1-SNAPSHOT.jar --server.port=8080 &
 
 http://localhost:8080
 
-![image-20200304115258328](https://tva1.sinaimg.cn/large/00831rSTly1gchr7wi6elj31gu0ltalz.jpg)
+![image-20200304154130467](https://tva1.sinaimg.cn/large/00831rSTly1gchxtoywjpj31h007umzq.jpg)
