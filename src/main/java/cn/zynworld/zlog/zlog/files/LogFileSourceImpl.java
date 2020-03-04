@@ -46,6 +46,9 @@ public class LogFileSourceImpl implements LogFileSource {
                     .sourceId(logFile.getSourceId())
                     .content(logContent.toString())
                     .build();
+        } catch (FileNotFoundException e) {
+            LOG.info("日志文件暂未存在 logFile:{}", logFile);
+            return null;
         } catch (Exception e) {
             LOG.info("日志文件读取异常 logFile:{}", logFile, e);
             return null;
