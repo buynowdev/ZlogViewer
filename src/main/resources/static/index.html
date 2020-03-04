@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>LogViewer</title>
+</head>
+<body>
+<div id="btn-container">
+</div>
+<div id="log-container" style="height: 1000px; overflow-y: scroll; background: #fffff1; color: #000000; padding: 10px;">
+    <pre></pre>
+</div>
+
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<script>
+    $.ajax({
+        //请求方式
+        type : "GET",
+        //请求的媒体类型
+        contentType: "application/json;charset=UTF-8",
+        //请求地址
+        url: "http://" + document.domain + ":" + location.port + "/sourceIds",
+        //请求成功
+        success : function(result) {
+            result.forEach(sourceId => {
+                $("#btn-container")
+                    .append("<a href=\"?sourceId="+ sourceId +"\"><button>" + sourceId +"</button></a> ")
+            })
+
+        },
+        //请求失败，包含具体的错误信息
+        error : function(e){
+            console.log(e.status);
+            console.log(e.responseText);
+        }
+    });
+
+    var socket;
+    function openSocket() {
+        if(typeof(WebSocket) == "undefined") {
+            console.log("您的浏览器不支持WebSocket");
+        }else{
+            console.log("您的浏览器支持WebSocket");
+            var socketUrl = "http://" + document.domain + ":" + location.port + "/ws/" + getQueryVariable("sourceId");
+            socketUrl=socketUrl.replace("https","ws").replace("http","ws");
+            console.log(socketUrl);
+            if(socket!=null){
+                socket.close();
+                socket=null;
+            }
+            socket = new WebSocket(socketUrl);
+            socket.onopen = function() {
+                console.log("websocket已打开");
+            };
+            socket.onmessage = function(msg) {
+                console.log(msg.data);
+                $("#log-container pre").append(msg.data);
+                $("#log-container").scrollTop($("#log-container pre").height() - $("#log-container").height());
+            };
+            //关闭事件
+            socket.onclose = function() {
+                console.log("websocket已关闭");
+            };
+            //发生了错误事件
+            socket.onerror = function() {
+                console.log("websocket发生了错误");
+            }
+        }
+    }
+
+    openSocket()
+
+    function getQueryVariable(variable)
+    {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+</script>
+</body>
+</html>

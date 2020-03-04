@@ -1,0 +1,8 @@
+{
+  "logFiles": [
+    {
+      "sourceId": "DemoLog",
+      "filePath": "demo.log"
+    }
+  ]
+}
