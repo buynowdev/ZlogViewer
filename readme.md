@@ -7,6 +7,8 @@
 
 
 ## 使用方式
+### 下载
+[Zlog-0.0.1](https://github.com/ZhaoYueNing/ZlogViewer/releases/tag/zlog-0.0.1)
 
 ### 编辑配置文件
 
