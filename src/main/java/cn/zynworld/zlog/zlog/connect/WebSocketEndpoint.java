@@ -9,6 +9,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
@@ -61,11 +62,17 @@ public class WebSocketEndpoint implements ApplicationContextAware  {
         endpointMap.remove(session.getId());
     }
 
-    public void acceptMsg(LogFileMsg logFileMsg) {
-        try {
-            if (!logFileMsg.getSourceId().equals(sourceId)) return;
-            session.getBasicRemote().sendText(logFileMsg.getContent());
-        } catch (IOException e) {
+    @OnError
+    public void onError(Session session, Throwable error) {
+        LOG.error("用户错误:", error);
+        endpointMap.remove(session.getId());
+        }
+
+        public void acceptMsg(LogFileMsg logFileMsg) {
+            try {
+                if (!logFileMsg.getSourceId().equals(sourceId)) return;
+                session.getBasicRemote().sendText(logFileMsg.getContent());
+            } catch (IOException e) {
             e.printStackTrace();
         }
     }

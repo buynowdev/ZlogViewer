@@ -28,8 +28,10 @@ public class LogFileSourceImpl implements LogFileSource {
     public LogFileMsg read() {
         try {
             RandomAccessFile file = getRandomAccessFile();
-            file.seek(lastTimeFileSize);
+            // 当日志文件重置后
+            if (file.length() < lastTimeFileSize) lastTimeFileSize = file.length();
 
+            file.seek(lastTimeFileSize);
             StringBuilder logContent = new StringBuilder();
             String tmp = "";
             while ((tmp = file.readLine()) != null) {
