@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import lombok.Cleanup;
+
 /**
  * @author zhaoyuening
  */
@@ -18,7 +20,6 @@ public class LogFileSourceImpl implements LogFileSource {
 
     // 上一次读取日志文件位置
     private long lastTimeFileSize = 0;
-    private RandomAccessFile randomAccessFile;
 
     public LogFileSourceImpl(LogFile logFile) {
         this.logFile = logFile;
@@ -27,15 +28,17 @@ public class LogFileSourceImpl implements LogFileSource {
     @Override
     public LogFileMsg read() {
         try {
-            RandomAccessFile file = getRandomAccessFile();
+            @Cleanup RandomAccessFile file = getRandomAccessFile();
             // 当日志文件重置后
-            if (file.length() < lastTimeFileSize) lastTimeFileSize = file.length();
+            if (file.length() < lastTimeFileSize) {
+                lastTimeFileSize = file.length();
+            }
 
             file.seek(lastTimeFileSize);
             StringBuilder logContent = new StringBuilder();
             String tmp = "";
             while ((tmp = file.readLine()) != null) {
-                logContent.append(new String(tmp.getBytes("ISO8859-1")) + "\n");
+                logContent.append(new String(tmp.getBytes("ISO8859-1"))).append("\n");
             }
 
             // 更新最近一次文件位置
@@ -58,10 +61,6 @@ public class LogFileSourceImpl implements LogFileSource {
     }
 
     private RandomAccessFile getRandomAccessFile() throws FileNotFoundException {
-        if (Objects.isNull(randomAccessFile)) {
-            this.randomAccessFile = new RandomAccessFile(logFile.getFile(), "r");
-        }
-
-        return this.randomAccessFile;
+        return new RandomAccessFile(logFile.getFile(), "r");
     }
 }
